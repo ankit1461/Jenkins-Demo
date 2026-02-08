@@ -1,0 +1,57 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+
+<h3 class="mb-4">Your Tasks</h3>
+
+<div class="row">
+{% for task in tasks %}
+  <div class="col-md-4">
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+
+        <h5 class="card-title">{{ task.title }}</h5>
+        <p class="card-text text-muted">{{ task.description }}</p>
+
+        <!-- STATUS -->
+        {% if task.is_active %}
+          <span class="badge bg-success">In Progress</span>
+        {% elif task.end_time %}
+          <span class="badge bg-secondary">Completed</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Not Started</span>
+        {% endif %}
+
+        <!-- TIMESTAMPS -->
+        <div class="mt-2 small text-muted">
+          {% if task.start_time %}
+            <div>⏱ Started: {{ task.start_time|date:"d M Y, h:i A" }}</div>
+          {% endif %}
+          {% if task.end_time %}
+            <div>✅ Ended: {{ task.end_time|date:"d M Y, h:i A" }}</div>
+          {% endif %}
+          {% if task.duration %}
+            <div>⌛ Duration: {{ task.duration }}</div>
+          {% endif %}
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="mt-3 d-flex justify-content-between">
+          {% if not task.is_active and not task.end_time %}
+            <a href="/start/{{ task.id }}/" class="btn btn-sm btn-primary">Start</a>
+          {% elif task.is_active %}
+            <a href="/end/{{ task.id }}/" class="btn btn-sm btn-danger">End</a>
+          {% endif %}
+
+          <div>
+            <a href="/update/{{ task.id }}/" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="/delete/{{ task.id }}/" class="btn btn-sm btn-outline-danger">Delete</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}
